@@ -1,0 +1,18 @@
+version: 2
+
+sources:
+  - name: raw
+    description: Parquet exports written by generator/generate.py. Synthetic data for calendar year 2025.
+    meta:
+      external_location: "data/raw/{name}.parquet"
+    tables:
+      - name: markets
+      - name: venues
+      - name: performers
+      - name: events
+      - name: team_games
+      - name: listings
+      - name: orders
+      - name: buyers
+      - name: event_traffic_daily
+      - name: fee_schedule

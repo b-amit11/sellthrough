@@ -1,0 +1,128 @@
+{
+  "windows": {
+    "pre": "events 2025-06-01 to 2025-07-25",
+    "post": "events 2025-08-08 to 2025-09-30"
+  },
+  "sell_through_did": {
+    "naive_all_events": {
+      "estimate": -0.053,
+      "ci_low": -0.096,
+      "ci_high": -0.0158
+    },
+    "excluding_phoenix_baseball": {
+      "estimate": -0.0342,
+      "ci_low": -0.0805,
+      "ci_high": 0.0095
+    }
+  },
+  "funnel_pooled": {
+    "all_events_excl_phoenix_baseball": [
+      {
+        "is_fee_pilot_market": false,
+        "period": "post",
+        "events": 211,
+        "sell_through": 0.6274,
+        "session_to_checkout": 0.0796,
+        "checkout_to_order": 0.4407,
+        "sessions_per_event": 3776.0379
+      },
+      {
+        "is_fee_pilot_market": false,
+        "period": "pre",
+        "events": 208,
+        "sell_through": 0.6342,
+        "session_to_checkout": 0.0801,
+        "checkout_to_order": 0.4402,
+        "sessions_per_event": 4365.5385
+      },
+      {
+        "is_fee_pilot_market": true,
+        "period": "post",
+        "events": 109,
+        "sell_through": 0.5744,
+        "session_to_checkout": 0.0796,
+        "checkout_to_order": 0.4116,
+        "sessions_per_event": 3618.9174
+      },
+      {
+        "is_fee_pilot_market": true,
+        "period": "pre",
+        "events": 109,
+        "sell_through": 0.6126,
+        "session_to_checkout": 0.0794,
+        "checkout_to_order": 0.4443,
+        "sessions_per_event": 3497.0275
+      }
+    ]
+  },
+  "funnel_did": {
+    "session_to_checkout": {
+      "estimate": 0.0002,
+      "ci_low": -0.0004,
+      "ci_high": 0.0008
+    },
+    "checkout_to_order": {
+      "estimate": -0.0364,
+      "ci_low": -0.0448,
+      "ci_high": -0.0292
+    }
+  },
+  "phoenix_baseball": [
+    {
+      "window": "Jun-Jul",
+      "home_games": 31,
+      "avg_last10_win_pct": 0.61,
+      "sessions_per_game": 3887.0,
+      "avg_sell_through": 0.5659
+    },
+    {
+      "window": "Aug-Sep",
+      "home_games": 26,
+      "avg_last10_win_pct": 0.319,
+      "sessions_per_game": 3347.0,
+      "avg_sell_through": 0.4633
+    }
+  ],
+  "economics_by_day_type": {
+    "weekend": {
+      "events": 333,
+      "sell_through_change_pts": {
+        "estimate": -0.023,
+        "ci_low": -0.0711,
+        "ci_high": 0.0203
+      },
+      "pilot_post_sell_through": 0.6245,
+      "tickets_sold_change_pct": -0.0355,
+      "net_revenue_change_pct": {
+        "estimate": 0.1574,
+        "ci_low": 0.0773,
+        "ci_high": 0.2403
+      },
+      "gmv_change_pct": {
+        "estimate": 0.0064,
+        "ci_low": -0.0632,
+        "ci_high": 0.0785
+      }
+    },
+    "weeknight": {
+      "events": 304,
+      "sell_through_change_pts": {
+        "estimate": -0.0869,
+        "ci_low": -0.1311,
+        "ci_high": -0.0425
+      },
+      "pilot_post_sell_through": 0.4687,
+      "tickets_sold_change_pct": -0.1564,
+      "net_revenue_change_pct": {
+        "estimate": 0.0123,
+        "ci_low": -0.0623,
+        "ci_high": 0.1002
+      },
+      "gmv_change_pct": {
+        "estimate": -0.1197,
+        "ci_low": -0.1846,
+        "ci_high": -0.0433
+      }
+    }
+  }
+}

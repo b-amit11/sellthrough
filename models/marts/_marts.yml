@@ -1,0 +1,82 @@
+version: 2
+
+models:
+  - name: dim_events
+    description: One row per event with performer, venue, market and home-team form.
+    columns:
+      - name: event_id
+        tests: [unique, not_null]
+      - name: day_type
+        description: "'weeknight' = Monday-Thursday, 'weekend' = Friday-Sunday."
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['weeknight', 'weekend']
+      - name: home_team_last10_win_pct
+        description: Home team's win rate over its previous 10 games. Null for non-sports events.
+
+  - name: dim_markets
+    columns:
+      - name: market_id
+        tests: [unique, not_null]
+
+  - name: fct_orders
+    description: One row per order with marketplace economics.
+    columns:
+      - name: order_id
+        tests: [unique, not_null]
+      - name: listing_id
+        tests:
+          - unique
+          - relationships:
+              arguments:
+                to: ref('fct_listings')
+                field: listing_id
+      - name: gmv
+        description: Ticket subtotal plus buyer fee. What the buyer pays.
+      - name: net_revenue
+        description: Buyer fee plus seller fee. What the marketplace keeps.
+      - name: is_fee_pilot_order
+        description: True when the order was placed under the 20% pilot buyer fee.
+
+  - name: fct_listings
+    description: One row per listing.
+    columns:
+      - name: listing_id
+        tests: [unique, not_null]
+      - name: listing_status
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['sold', 'expired', 'delisted']
+
+  - name: fct_event_performance
+    description: >
+      One row per event. Core KPI table for the dashboard.
+      sell_through_rate = tickets sold / tickets listed (all listings, including delisted).
+      take_rate = net revenue / ticket sales (completed orders only).
+    columns:
+      - name: event_id
+        tests:
+          - unique
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_events')
+                field: event_id
+      - name: sell_through_rate
+        tests:
+          - not_null
+      - name: checkout_to_order_rate
+        description: Orders / checkout starts. Where a fee change shows up, because buyers see the fee at checkout.
+      - name: session_to_checkout_rate
+        description: Checkout starts / sessions. Where demand-side interest shows up.
+
+  - name: fct_market_daily
+    description: Daily sessions, checkouts, orders, GMV and revenue by market, category group and day type.
+
+  - name: fct_buyer_cohorts
+    description: Monthly retention by month of first 2025 purchase. January includes pre-2025 buyers.
+    columns:
+      - name: retention_rate
+        tests: [not_null]
