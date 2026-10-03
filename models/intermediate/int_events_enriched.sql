@@ -25,7 +25,7 @@ select
     e.event_id,
     e.event_start_local,
     e.event_date,
-    date_trunc('month', e.event_date)       as event_month,
+    cast(date_trunc('month', e.event_date) as date) as event_month,
     e.event_day_name,
     e.day_type,
     e.face_value,

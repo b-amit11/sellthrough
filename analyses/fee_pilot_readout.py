@@ -3,7 +3,7 @@
 Reads the dbt marts in warehouse.duckdb and writes:
   reports/findings.json      every number quoted in reports/memo.md
   reports/figures/*.png      charts used in the memo
-  exports/*.csv              mart extracts for the Looker Studio dashboard
+  exports/*.csv              mart extracts for the Data Studio dashboard
 
 Method: difference-in-differences on events, pilot markets vs control markets,
 June 1 - July 25 events (pre) vs Aug 8 - Sep 30 events (post). The gaps around
@@ -228,11 +228,11 @@ fig.savefig(FIGS / "economics_by_day_type.png", dpi=160)
 plt.close(fig)
 
 # --------------------------------------------------------------------------- #
-# Looker Studio extracts
+# Data Studio extracts
 # --------------------------------------------------------------------------- #
 
 EXPORTS.mkdir(exist_ok=True)
 for table in ["fct_event_performance", "fct_market_daily", "fct_buyer_cohorts"]:
-    con.sql(f"copy (select * from {table}) to '{EXPORTS / (table + '.csv')}' (header)")
+    con.sql(f"copy (select * from {table} order by all) to '{EXPORTS / (table + '.csv')}' (header)")
 
 print(json.dumps(findings, indent=2, default=str))

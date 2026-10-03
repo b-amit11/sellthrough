@@ -1,6 +1,8 @@
 # Sellthrough
 
-**Did a higher buyer fee pay for itself?** An end-to-end analytics project for a live-event ticket marketplace: a synthetic data source, dbt models with tests, Looker-ready semantic definitions, and a stakeholder memo that answers a pricing question.
+**Did a higher buyer fee pay for itself?** An end-to-end analytics project for a live-event ticket marketplace: a synthetic data source, dbt models with tests, Looker-ready semantic definitions, a live dashboard, and a stakeholder memo that answers a pricing question.
+
+📊 **[Live dashboard (Data Studio)](https://datastudio.google.com/reporting/f2f08fb4-7c2d-40a7-9f75-b5ff42d51ef0)** · 📝 **[Stakeholder memo](reports/memo.md)**
 
 > **Answer:** keep the 20% fee on weekend events (net revenue +15.7%, GMV flat). Roll it back on weeknights, where it cut tickets sold by 15.6% and GMV by 12% with no reliable revenue gain. A local team's slump makes the fee look about 50% worse than it is unless you separate it out. **[Read the memo →](reports/memo.md)**
 
@@ -25,7 +27,7 @@ On Aug 1, 2025, the marketplace raised its buyer service fee from 15% to 20% in 
 | Tests | 39 dbt tests: keys, relationships, accepted values, plus custom checks that sold ≤ listed, the fee charged matches the fee schedule, and orders reconcile to source | [`models/marts/_marts.yml`](models/marts/_marts.yml), [`tests/`](tests) |
 | Semantic layer | LookML views and explores with metric definitions | [`lookml/`](lookml) |
 | Analysis | Difference-in-differences with fixed effects and bootstrap intervals | [`analyses/fee_pilot_readout.py`](analyses/fee_pilot_readout.py) |
-| Dashboard | Mart extracts and a step-by-step Looker Studio build | [`exports/`](exports), [`docs/looker_studio.md`](docs/looker_studio.md) |
+| Dashboard | [Live Data Studio dashboard](https://datastudio.google.com/reporting/f2f08fb4-7c2d-40a7-9f75-b5ff42d51ef0) built from the mart extracts, with a rebuild guide | [`exports/`](exports), [`docs/data_studio.md`](docs/data_studio.md) |
 | Readout | One-page stakeholder memo | [`reports/memo.md`](reports/memo.md) |
 
 ## Metric definitions
