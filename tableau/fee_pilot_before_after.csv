@@ -1,0 +1,9 @@
+day_type,market_group,period,events,sell_through,checkout_to_order
+Weekend (Fri-Sun),Control,Before (Jun 1 - Jul 25),105,0.6756,0.4411
+Weekend (Fri-Sun),Control,After (Aug 8 - Sep 30),113,0.6549,0.4398
+Weekend (Fri-Sun),Pilot,Before (Jun 1 - Jul 25),51,0.6666,0.4451
+Weekend (Fri-Sun),Pilot,After (Aug 8 - Sep 30),64,0.6245,0.4199
+Weeknight (Mon-Thu),Control,Before (Jun 1 - Jul 25),103,0.5745,0.4385
+Weeknight (Mon-Thu),Control,After (Aug 8 - Sep 30),98,0.5885,0.442
+Weeknight (Mon-Thu),Pilot,Before (Jun 1 - Jul 25),58,0.5472,0.4431
+Weeknight (Mon-Thu),Pilot,After (Aug 8 - Sep 30),45,0.4687,0.3896
