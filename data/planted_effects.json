@@ -1,0 +1,8 @@
+{
+  "sell_through_effect": {
+    "all_events": -0.0423,
+    "excluding_phoenix_baseball": -0.0382,
+    "weekend": -0.0266,
+    "weeknight": -0.0626
+  }
+}

@@ -1,8 +1,10 @@
 # Sellthrough
 
+[![CI](https://github.com/b-amit11/sellthrough/actions/workflows/ci.yml/badge.svg)](https://github.com/b-amit11/sellthrough/actions/workflows/ci.yml)
+
 **Did a higher buyer fee pay for itself?** An end-to-end analytics project for a live-event ticket marketplace: a synthetic data source, dbt models with tests, Looker-ready semantic definitions, a live dashboard, and a stakeholder memo that answers a pricing question.
 
-📊 **[Tableau Public viz](https://public.tableau.com/app/profile/amit.bhattarai7047/viz/Sellthrough-BuyerFeePilot/Sheet1)** · **[Data Studio dashboard](https://datastudio.google.com/reporting/f2f08fb4-7c2d-40a7-9f75-b5ff42d51ef0)** · 📝 **[Stakeholder memo](reports/memo.md)**
+📊 **[Tableau Public viz](https://public.tableau.com/app/profile/amit.bhattarai7047/viz/Sellthrough-BuyerFeePilot/Sheet1)** · **[Data Studio dashboard](https://datastudio.google.com/reporting/f2f08fb4-7c2d-40a7-9f75-b5ff42d51ef0)** · 📚 **[dbt docs & lineage](https://b-amit11.github.io/sellthrough/)** · 📝 **[Stakeholder memo](reports/memo.md)**
 
 > **Answer:** keep the 20% fee on weekend events (net revenue +15.7%, GMV flat). Roll it back on weeknights, where it cut tickets sold by 15.6% and GMV by 12% with no reliable revenue gain. A local team's slump makes the fee look about 50% worse than it is unless you separate it out. **[Read the memo →](reports/memo.md)**
 
@@ -47,12 +49,15 @@ Splitting the funnel into these two steps is what separates the two drivers in t
 
 ## Run it
 
-Requires Python 3.11+.
+Requires Python 3.14 (see `.python-version`). Dependency versions are pinned in `requirements.txt`, so a fresh install reproduces the memo's numbers exactly.
 
 ```bash
 make setup   # create .venv and install dbt-duckdb, pandas, matplotlib
 make all     # generate data -> dbt build (models + tests) -> analysis, charts, CSV exports
+make docs    # build the dbt docs site with model lineage -> target/static_index.html
 ```
+
+CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs `make all` on every push, fails if `reports/findings.json` changes (which would make the memo stale), and publishes the dbt docs to GitHub Pages.
 
 Explore the warehouse directly:
 
@@ -67,6 +72,6 @@ All data is **synthetic**. Markets are real US cities, but every team, artist, s
 - **A fee pilot.** The `fee_schedule` table shows the 20% buyer fee in three markets from Aug 1. The simulation makes weeknight and low-price buyers more fee-sensitive.
 - **A team slump.** The `team_games` table shows the Phoenix baseball team winning about 24% of games after Aug 1, which lowers demand for its home games.
 
-Because both effects are planted, the analysis can be checked against a known answer. That's something real data never allows, and it's why this project uses synthetic data.
+Because both effects are planted, the analysis can be checked against a known answer. That's something real data never allows, and it's why this project uses synthetic data. The generator writes the true fee effect to [`data/planted_effects.json`](data/planted_effects.json), and `make check` (run in CI) confirms each estimate's 95% interval contains it. See the [memo's last section](reports/memo.md#checking-against-the-planted-answer).
 
 The LookML in `lookml/` follows standard Looker syntax but hasn't been validated against a live Looker instance.

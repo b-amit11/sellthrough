@@ -36,3 +36,15 @@ The Phoenix Scorpions collapsed in August: their last-10-game win rate fell from
 - **Limits:** with only three pilot markets, the intervals assume events are independent. Grouping by market would widen them, which is one more reason for the staggered rollout. The analysis covers seven weeks after the change and can't show long-run effects such as fans switching platforms.
 
 All figures come from `analyses/fee_pilot_readout.py` and are stored in [`findings.json`](findings.json).
+
+## Checking against the planted answer
+
+The data is synthetic, so the true fee effect is known: the generator records whether each listing would have sold without the fee ([`data/planted_effects.json`](../data/planted_effects.json)). The analysis never reads that file. [`analyses/check_against_truth.py`](../analyses/check_against_truth.py) compares the two, and CI fails if any 95% interval misses the truth.
+
+| Sell-through effect | True | Estimated | 95% CI |
+|---|---|---|---|
+| All events, excl. Phoenix baseball | −3.8 pts | −3.4 pts | −8.1 to +0.9 |
+| Weekend | −2.7 pts | −2.3 pts | −7.1 to +2.0 |
+| Weeknight | −6.3 pts | −8.7 pts | −13.1 to −4.2 |
+
+All three intervals contain the truth. The weeknight estimate overshoots, though: the true effect implies tickets sold fell about 12% and GMV about 8%, not 15.6% and 12%. The recommendation doesn't change, since weeknight GMV still falls and revenue gains stay small. It's a reminder that the weeknight numbers are the less precise ones.

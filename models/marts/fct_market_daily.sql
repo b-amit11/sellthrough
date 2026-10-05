@@ -39,8 +39,8 @@ select
     coalesce(t.checkout_starts, 0)   as checkout_starts,
     coalesce(o.orders, 0)            as orders,
     coalesce(o.tickets_sold, 0)      as tickets_sold,
-    coalesce(o.gmv, 0)               as gmv,
-    coalesce(o.net_revenue, 0)       as net_revenue
+    round(coalesce(o.gmv, 0), 2)               as gmv,
+    round(coalesce(o.net_revenue, 0), 2)       as net_revenue
 from traffic t
 full outer join orders o using (activity_date, market_id, category_group, day_type)
 join {{ ref('stg_markets') }} m using (market_id)
