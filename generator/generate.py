@@ -18,6 +18,7 @@ Run: python generator/generate.py  (writes Parquet files to data/raw/)
 from __future__ import annotations
 
 import datetime as dt
+import json
 from pathlib import Path
 
 import duckdb
@@ -390,6 +391,40 @@ fee_schedule = pd.DataFrame(
 )
 
 # --------------------------------------------------------------------------- #
+# Answer key: the true fee effect, from the hidden would-have-sold flag
+# --------------------------------------------------------------------------- #
+
+# The analysis never reads this. analyses/check_against_truth.py compares the
+# analysis's estimates to it, using the same post window and population.
+ev_key = events.set_index("event_id")
+key = listings[["event_id", "quantity", "listing_status", "_would_sell"]].copy()
+key["event_date"] = key.event_id.map(ev_key.event_date)
+key["is_pilot"] = key.event_id.map(ev_key.market_id).isin(pilot_markets)
+key["is_cancelled"] = key.event_id.map(ev_key.is_cancelled)
+key["is_phoenix_baseball"] = (key.event_id.map(ev_key.market_id) == markets.set_index("market_name").market_id["Phoenix"]) \
+    & (key.event_id.map(ev_key.category) == "baseball")
+key["day_type"] = np.where(pd.to_datetime(key.event_date).dt.weekday <= 3, "weeknight", "weekend")
+key = key[key.is_pilot & ~key.is_cancelled
+          & key.event_date.between(dt.date(2025, 8, 8), dt.date(2025, 9, 30))]
+
+
+def true_effect(df: pd.DataFrame) -> float:
+    """Sell-through with the pilot minus sell-through without it, in pilot-market post events."""
+    sold = (df.quantity * (df.listing_status == "sold")).sum()
+    would = (df.quantity * df._would_sell).sum()
+    return round(float((sold - would) / df.quantity.sum()), 4)
+
+
+clean_key = key[~key.is_phoenix_baseball]
+truth = {
+    "sell_through_effect": {
+        "all_events": true_effect(key),
+        "excluding_phoenix_baseball": true_effect(clean_key),
+        **{d: true_effect(g) for d, g in clean_key.groupby("day_type")},
+    },
+}
+
+# --------------------------------------------------------------------------- #
 # Write
 # --------------------------------------------------------------------------- #
 
@@ -409,3 +444,7 @@ for name, df in tables.items():
     con.execute(f"COPY df TO '{OUT / (name + '.parquet')}' (FORMAT parquet)")
     con.unregister("df")
     print(f"{name:22s} {len(df):>9,d} rows")
+
+TRUTH = OUT.parent / "planted_effects.json"
+TRUTH.write_text(json.dumps(truth, indent=2) + "\n")
+print(f"{'answer key':22s} {TRUTH.relative_to(OUT.parents[1])}")

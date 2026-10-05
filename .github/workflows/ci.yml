@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version-file: .python-version
+          cache: pip
+
+      - name: Install
+        run: make setup
+
+      - name: Generate data, build dbt models, run tests, run analysis, check against planted effect
+        run: make all
+
+      # The memo quotes numbers from findings.json. If a code change moves
+      # them, the memo is stale, so fail and show the diff.
+      - name: Check findings match the committed memo numbers
+        run: git diff --exit-code reports/findings.json data/planted_effects.json
+
+      - name: Build dbt docs site
+        if: github.ref == 'refs/heads/main'
+        run: |
+          make docs
+          mkdir -p site && cp target/static_index.html site/index.html
+
+      - uses: actions/upload-pages-artifact@v3
+        if: github.ref == 'refs/heads/main'
+        with:
+          path: site
+
+  deploy-docs:
+    if: github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4
